@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This file documents the GNU Assembler "as".
+
+Copyright © 1991-2026 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, with no Front-Cover Texts, and with no
+Back-Cover Texts.  A copy of the license is included in the
+section entitled "GNU Free Documentation License".
+ -->
+<title>Object Attributes v1 (Using as)</title>
+
+<meta name="description" content="Object Attributes v1 (Using as)">
+<meta name="keywords" content="Object Attributes v1 (Using as)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="AS-Index.html" rel="index" title="AS Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Object-Attributes.html" rel="up" title="Object Attributes">
+<link href="Object-Attributes-v2.html" rel="next" title="Object Attributes v2">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="rocm-theme.css">
+
+<link rel="stylesheet" type="text/css" href="toc-sidebar.css"><script>document.documentElement.classList.add ("js");</script>
+</head>
+
+<body lang="en">
+<nav id="toc-sidebar" class="toc-sidebar" aria-label="Manual contents">
+<div class="toc-sidebar-title"><a href="index.html"></a></div>
+<div class="toc-sidebar-search">
+<input id="toc-sidebar-search-input" type="search" placeholder="Filter sections" aria-label="Filter sections">
+</div>
+<div id="toc-sidebar-tree" class="toc-sidebar-tree"></div>
+</nav>
+<script src="toc-sidebar-data.js"></script>
+<script src="toc-sidebar.js"></script>
+<div class="toc-sidebar-main">
+<div class="section-level-extent" id="Object-Attributes-v1">
+<div class="nav-panel">
+<p>
+Next: <a href="Object-Attributes-v2.html" accesskey="n" rel="next">Object Attributes v2</a>, Up: <a href="Object-Attributes.html" accesskey="u" rel="up">Object Attributes</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="AS-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Object-Attributes-v1-1"><span>8.1 Object Attributes v1<a class="copiable-link" href="#Object-Attributes-v1-1"> &para;</a></span></h3>
+
+<p>In Object Attributes v1 (OAv1) Compatibility information is recorded as a series
+of object attributes.  Each attribute has a <em class="dfn">vendor</em>, <em class="dfn">tag</em>, and
+<em class="dfn">value</em>.  The <em class="dfn">vendor</em> is a string, and indicates who sets the meaning
+of the tag.  The <em class="dfn">tag</em> is an integer, and indicates what property the
+attribute describes.  The <em class="dfn">value</em> may be a string or an integer, and
+indicates how the property affects this object.  Integer tags generally default
+to 0, while string tags default to the empty string.  Tags are only recorded in
+the file if they have a non-default value.
+</p>
+<p>OAv1 were developed as part of the ABI for the ARM Architecture.  The file
+format is documented in <cite class="cite">Addenda to, and Errata in, the ABI for the Arm
+Architecture</cite>.
+</p>
+</div>
+
+
+</div><!-- toc-sidebar-main -->
+
+</body>
+</html>

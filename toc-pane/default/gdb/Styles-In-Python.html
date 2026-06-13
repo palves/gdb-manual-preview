@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2026 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom."
+
+Legal Disclaimer and Copyright Information
+
+AMD ROCm software is made available by Advanced Micro Devices, Inc. under the
+open source license identified in the top-level directory for the library in
+the repository on https://github.com/ROCm/ (Github.com) (Portions of AMD
+ROCm software are licensed under MITx11 and UIL/NCSA. For more information on
+the license, review the license.txt in the top-level directory for the
+library on https://github.com/ROCm/ (Github.com)).  The additional terms
+and conditions below apply to your use of AMD ROCm technical documentation.
+
+©2019-2026 Advanced Micro Devices, Inc.  All rights reserved.
+
+The information presented in this document is for informational purposes only
+and may contain technical inaccuracies, omissions, and typographical errors.
+The information contained herein is subject to change and may be rendered
+inaccurate for many reasons, including but not limited to product and roadmap
+changes, component and motherboard version changes, new model and/or product
+releases, product differences between differing manufacturers, software
+changes, BIOS flashes, firmware upgrades, or the like.  Any computer system has
+risks of security vulnerabilities that cannot be completely prevented or
+mitigated.  AMD assumes no obligation to update or otherwise correct or revise
+this information.  However, AMD reserves the right to revise this information
+and to make changes from time to time to the content hereof without obligation
+of AMD to notify any person of such revisions or changes.
+
+THIS INFORMATION IS PROVIDED "AS IS."  AMD MAKES NO REPRESENTATIONS OR
+WARRANTIES WITH RESPECT TO THE CONTENTS HEREOF AND ASSUMES NO RESPONSIBILITY
+FOR ANY INACCURACIES, ERRORS, OR OMISSIONS THAT MAY APPEAR IN THIS INFORMATION.
+AMD SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+MERCHANTABILITY, OR FITNESS FOR ANY PARTICULAR PURPOSE.  IN NO EVENT WILL AMD
+BE LIABLE TO ANY PERSON FOR ANY RELIANCE, DIRECT, INDIRECT, SPECIAL, OR OTHER
+CONSEQUENTIAL DAMAGES ARISING FROM THE USE OF ANY INFORMATION CONTAINED HEREIN,
+EVEN IF AMD IS EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+AMD, the AMD Arrow logo, AMD Instinct™, Radeon™, AMD ROCm™, and combinations
+thereof are trademarks of Advanced Micro Devices, Inc.
+Linux® is the registered trademark of Linus Torvalds in the
+U.S. and other countries. PCIe® is a registered trademark of
+PCI-SIG Corporation.  Other product names used in this publication are for
+identification purposes only and may be trademarks of their respective
+companies. -->
+<title>Styles In Python (Debugging with ROCgdb)</title>
+
+<meta name="description" content="Styles In Python (Debugging with ROCgdb)">
+<meta name="keywords" content="Styles In Python (Debugging with ROCgdb)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Architectures-In-Python.html" rel="next" title="Architectures In Python">
+<link href="Colors-In-Python.html" rel="prev" title="Colors In Python">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+<link rel="stylesheet" type="text/css" href="toc-sidebar.css"><script>document.documentElement.classList.add ("js");</script>
+</head>
+
+<body lang="en">
+<nav id="toc-sidebar" class="toc-sidebar" aria-label="Manual contents">
+<div class="toc-sidebar-title"><a href="index.html"></a></div>
+<div class="toc-sidebar-search">
+<input id="toc-sidebar-search-input" type="search" placeholder="Filter sections" aria-label="Filter sections">
+</div>
+<div id="toc-sidebar-tree" class="toc-sidebar-tree"></div>
+</nav>
+<script src="toc-sidebar-data.js"></script>
+<script src="toc-sidebar.js"></script>
+<div class="toc-sidebar-main">
+<div class="subsubsection-level-extent" id="Styles-In-Python">
+<div class="nav-panel">
+<p>
+Next: <a href="Architectures-In-Python.html" accesskey="n" rel="next">Python representation of architectures</a>, Previous: <a href="Colors-In-Python.html" accesskey="p" rel="prev">Python representation of colors</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Python-representation-of-styles"><span>24.3.2.37 Python representation of styles<a class="copiable-link" href="#Python-representation-of-styles"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-styles-in-python"></a>
+<a class="index-entry-id" id="index-gdb_002eStyle"></a>
+
+<p>A style object contains the foreground and background colors
+(see <a class="pxref" href="Colors-In-Python.html">Python representation of colors</a>), along with an intensity, and can be used
+to apply this styling to output produced from Python.
+</p>
+<p>ROCgdb has many styles builtin (see <a class="pxref" href="Output-Styling.html">Output Styling</a>), and
+style objects can be created that apply these builtin styles to Python
+output.  It is also possible to create new styles which can be used to
+style Python output (see <a class="pxref" href="Parameters-In-Python.html#Creating-Style-Parameters">Creating Style Parameters</a>).
+</p>
+<p>The style class is called <code class="code">gdb.Style</code>, and has the following
+methods and attributes:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Style_002e_005f_005finit_005f_005f"><span class="category-def">Function: </span><span><strong class="def-name">Style.__init__</strong> <var class="def-var-arguments">(style_name)</var><a class="copiable-link" href="#index-Style_002e_005f_005finit_005f_005f"> &para;</a></span></dt>
+<dd><p>Create a <code class="code">gdb.Style</code> that represents a builtin named style.  The
+<var class="var">style_name</var> must be a non-empty string that names a style that
+exists as a setting in ROCgdb within &lsquo;<samp class="samp">set style &hellip;</samp>&rsquo;.  For
+example, the string &lsquo;<samp class="samp">&quot;filename&quot;</samp>&rsquo; can be used to create a
+<code class="code">gdb.Style</code> object representing the &lsquo;<samp class="samp">set style filename</samp>&rsquo;
+style.
+</p>
+<p>If <var class="var">style_name</var> names an unknown style then a <code class="code">RuntimeError</code>
+exception is raised.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Style_002e_005f_005finit_005f_005f-1"><span class="category-def">Function: </span><span><strong class="def-name">Style.__init__</strong> <var class="def-var-arguments">(foreground=<code class="code">None</code>, background=<code class="code">None</code>, intensity=gdb.INTENSITY_NORMAL)</var><a class="copiable-link" href="#index-Style_002e_005f_005finit_005f_005f-1"> &para;</a></span></dt>
+<dd><p>Create a custom <code class="code">gdb.Style</code>, manually specifying the three
+individual components.  All of the arguments are optional.  By
+default, if no arguments are given, then the default style will be
+created, this will produce output with the default terminal foreground
+and background colors, along with the normal level of intensity
+(i.e. neither bold, nor dim).
+</p>
+<p>The <var class="var">foreground</var> and <var class="var">background</var> arguments should either be
+<code class="code">None</code>, in which case the terminal default colors are used, or a
+<code class="code">gdb.Color</code> object (see <a class="pxref" href="Colors-In-Python.html">Python representation of colors</a>).  Any other object
+type will result in a <code class="code">TypeError</code> exception being raised.
+</p>
+<p>The <var class="var">intensity</var> argument should be one of the intensity constants
+defined below (see <a class="pxref" href="#Style-Intensities">Style Intensities</a>).  Passing a none integer
+value results in a <code class="code">TypeError</code> exception, and passing an invalid
+constant results in a <code class="code">ValueError</code> exception.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Style_002eescape_005fsequence"><span class="category-def">Function: </span><span><strong class="def-name">Style.escape_sequence</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-Style_002eescape_005fsequence"> &para;</a></span></dt>
+<dd><p>If styling is enabled (see <a class="pxref" href="Output-Styling.html">Output Styling</a>, then this method
+returns the string which is the terminal escape sequence necessary to
+apply this <code class="code">gdb.Style</code>.
+</p>
+<p>If styling is disabled then this method returns the empty string.
+</p>
+<p>If this is a named style, which for some reason can no longer be read,
+then a <code class="code">RuntimeError</code> exception is raised.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Style_002eapply"><span class="category-def">Function: </span><span><strong class="def-name">Style.apply</strong> <var class="def-var-arguments">(string)</var><a class="copiable-link" href="#index-Style_002eapply"> &para;</a></span></dt>
+<dd><p>This method returns <var class="var">string</var>, which must be a <code class="code">str</code> object,
+with an escape sequence at both the start, and at the end.  The escape
+sequence at the start applies this style, while the escape sequence at
+the end applies the terminal&rsquo;s default style.
+</p>
+<p>The effect of this is that, printing the result of this method, will
+print <var class="var">string</var> with this style applied.  Future output will be
+printed with the terminal&rsquo;s default style.
+</p>
+<p>If styling is currently disabled (see <a class="pxref" href="Output-Styling.html">Output Styling</a>), then
+<code class="code">Style.apply</code> just returns a copy of <var class="var">string</var> with no escape
+sequences added.
+</p>
+<p>If this is a named style, which for some reason can no longer be read,
+then a <code class="code">RuntimeError</code> exception is raised.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Style_002eforeground"><span class="category-def">Variable: </span><span><strong class="def-name">Style.foreground</strong><a class="copiable-link" href="#index-Style_002eforeground"> &para;</a></span></dt>
+<dd><p>This read/write attribute contains the <code class="code">gdb.Color</code> object
+representing this style&rsquo;s foreground color.  Writing to this attribute
+updates the style&rsquo;s foreground color.
+</p>
+<p>If the <code class="code">gdb.Style</code> object was created using a named style (i.e.
+using the single argument <var class="var">style_name</var> <code class="code">__init__</code> method),
+then the underlying setting will be updated.
+</p>
+<p>For unnamed styles, only the <code class="code">gdb.Style</code> object will change.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Style_002ebackground"><span class="category-def">Variable: </span><span><strong class="def-name">Style.background</strong><a class="copiable-link" href="#index-Style_002ebackground"> &para;</a></span></dt>
+<dd><p>This read/write attribute contains the <code class="code">gdb.Color</code> object
+representing this style&rsquo;s background color.  Writing to this attribute
+updates the style&rsquo;s background color.
+</p>
+<p>If the <code class="code">gdb.Style</code> object was created using a named style (i.e.
+using the single argument <var class="var">style_name</var> <code class="code">__init__</code> method),
+then the underlying setting will be updated.
+</p>
+<p>For unnamed styles, only the <code class="code">gdb.Style</code> object will change.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Style_002eintensity"><span class="category-def">Variable: </span><span><strong class="def-name">Style.intensity</strong><a class="copiable-link" href="#index-Style_002eintensity"> &para;</a></span></dt>
+<dd><p>This read/write attribute contains the intensity for this style, and
+will be one of the constants defined below (see <a class="pxref" href="#Style-Intensities">Style Intensities</a>).  Writing to this attribute updates the style&rsquo;s
+intensity.
+</p>
+<p>It is also possible to write <code class="code">None</code> to this attribute, this is
+equivalent of writing <code class="code">gdb.INTENSITY_NORMAL</code>.  This attribute
+will never read as <code class="code">None</code>.
+</p>
+<p>If the <code class="code">gdb.Style</code> object was created using a named style (i.e.
+using the single argument <var class="var">style_name</var> <code class="code">__init__</code> method),
+then the underlying setting will be updated.
+</p>
+<p>For unnamed styles, only the <code class="code">gdb.Style</code> object will change.
+</p></dd></dl>
+
+<a class="anchor" id="Style-Intensities"></a><p>The following constants are defined to represent the different style
+intensities:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-gdb_002eINTENSITY_005fNORMAL"></a>
+<a id="index-INTENSITY_005fNORMAL"></a><span><code class="code">gdb.INTENSITY_NORMAL</code><a class="copiable-link" href="#index-INTENSITY_005fNORMAL"> &para;</a></span></dt>
+<dd><p>This is the terminal&rsquo;s default intensity.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eINTENSITY_005fBOLD"></a>
+<a id="index-INTENSITY_005fBOLD"></a><span><code class="code">gdb.INTENSITY_BOLD</code><a class="copiable-link" href="#index-INTENSITY_005fBOLD"> &para;</a></span></dt>
+<dd><p>This is for bold text.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002eINTENSITY_005fDIM"></a>
+<a id="index-INTENSITY_005fDIM"></a><span><code class="code">gdb.INTENSITY_DIM</code><a class="copiable-link" href="#index-INTENSITY_005fDIM"> &para;</a></span></dt>
+<dd><p>This is for dim text.
+</p></dd>
+</dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Architectures-In-Python.html">Python representation of architectures</a>, Previous: <a href="Colors-In-Python.html">Python representation of colors</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+</div><!-- toc-sidebar-main -->
+
+</body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- Copyright © 1988-2026 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "Free Software" and "Free Software Needs
+Free Documentation", with the Front-Cover Texts being "A GNU Manual,"
+and with the Back-Cover Texts as in (a) below.
+
+(a) The FSF's Back-Cover Text is: "You are free to copy and modify
+this GNU Manual.  Buying copies from GNU Press supports the FSF in
+developing GNU and promoting software freedom."
+
+Legal Disclaimer and Copyright Information
+
+AMD ROCm software is made available by Advanced Micro Devices, Inc. under the
+open source license identified in the top-level directory for the library in
+the repository on https://github.com/ROCm/ (Github.com) (Portions of AMD
+ROCm software are licensed under MITx11 and UIL/NCSA. For more information on
+the license, review the license.txt in the top-level directory for the
+library on https://github.com/ROCm/ (Github.com)).  The additional terms
+and conditions below apply to your use of AMD ROCm technical documentation.
+
+©2019-2026 Advanced Micro Devices, Inc.  All rights reserved.
+
+The information presented in this document is for informational purposes only
+and may contain technical inaccuracies, omissions, and typographical errors.
+The information contained herein is subject to change and may be rendered
+inaccurate for many reasons, including but not limited to product and roadmap
+changes, component and motherboard version changes, new model and/or product
+releases, product differences between differing manufacturers, software
+changes, BIOS flashes, firmware upgrades, or the like.  Any computer system has
+risks of security vulnerabilities that cannot be completely prevented or
+mitigated.  AMD assumes no obligation to update or otherwise correct or revise
+this information.  However, AMD reserves the right to revise this information
+and to make changes from time to time to the content hereof without obligation
+of AMD to notify any person of such revisions or changes.
+
+THIS INFORMATION IS PROVIDED "AS IS."  AMD MAKES NO REPRESENTATIONS OR
+WARRANTIES WITH RESPECT TO THE CONTENTS HEREOF AND ASSUMES NO RESPONSIBILITY
+FOR ANY INACCURACIES, ERRORS, OR OMISSIONS THAT MAY APPEAR IN THIS INFORMATION.
+AMD SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+MERCHANTABILITY, OR FITNESS FOR ANY PARTICULAR PURPOSE.  IN NO EVENT WILL AMD
+BE LIABLE TO ANY PERSON FOR ANY RELIANCE, DIRECT, INDIRECT, SPECIAL, OR OTHER
+CONSEQUENTIAL DAMAGES ARISING FROM THE USE OF ANY INFORMATION CONTAINED HEREIN,
+EVEN IF AMD IS EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+AMD, the AMD Arrow logo, AMD Instinct™, Radeon™, AMD ROCm™, and combinations
+thereof are trademarks of Advanced Micro Devices, Inc.
+Linux® is the registered trademark of Linus Torvalds in the
+U.S. and other countries. PCIe® is a registered trademark of
+PCI-SIG Corporation.  Other product names used in this publication are for
+identification purposes only and may be trademarks of their respective
+companies. -->
+<title>Parameters In Python (Debugging with ROCgdb)</title>
+
+<meta name="description" content="Parameters In Python (Debugging with ROCgdb)">
+<meta name="keywords" content="Parameters In Python (Debugging with ROCgdb)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Python-API.html" rel="up" title="Python API">
+<link href="Functions-In-Python.html" rel="next" title="Functions In Python">
+<link href="GDB_002fMI-Notifications-In-Python.html" rel="prev" title="GDB/MI Notifications In Python">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+span.r {font-family: initial; font-weight: normal; font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
+-->
+</style>
+
+<link rel="stylesheet" type="text/css" href="toc-sidebar.css"><script>document.documentElement.classList.add ("js");</script>
+</head>
+
+<body lang="en">
+<nav id="toc-sidebar" class="toc-sidebar" aria-label="Manual contents">
+<div class="toc-sidebar-title"><a href="index.html"></a></div>
+<div class="toc-sidebar-search">
+<input id="toc-sidebar-search-input" type="search" placeholder="Filter sections" aria-label="Filter sections">
+</div>
+<div id="toc-sidebar-tree" class="toc-sidebar-tree"></div>
+</nav>
+<script src="toc-sidebar-data.js"></script>
+<script src="toc-sidebar.js"></script>
+<div class="toc-sidebar-main">
+<div class="subsubsection-level-extent" id="Parameters-In-Python">
+<div class="nav-panel">
+<p>
+Next: <a href="Functions-In-Python.html" accesskey="n" rel="next">Writing new convenience functions</a>, Previous: <a href="GDB_002fMI-Notifications-In-Python.html" accesskey="p" rel="prev"><small class="sc">GDB/MI</small> Notifications In Python</a>, Up: <a href="Python-API.html" accesskey="u" rel="up">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsubsection" id="Parameters-In-Python-1"><span>24.3.2.24 Parameters In Python<a class="copiable-link" href="#Parameters-In-Python-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-parameters-in-python"></a>
+<a class="index-entry-id" id="index-python-parameters"></a>
+<a class="index-entry-id" id="index-gdb_002eParameter"></a>
+<a class="index-entry-id" id="index-Parameter"></a>
+<p>You can implement new ROCgdb parameters using Python.  A new
+parameter is implemented as an instance of the <code class="code">gdb.Parameter</code>
+class.
+</p>
+<p>Parameters are exposed to the user via the <code class="code">set</code> and
+<code class="code">show</code> commands.  See <a class="xref" href="Help.html">Getting Help</a>.
+</p>
+<p>There are many parameters that already exist and can be set in
+ROCgdb.  Two examples are: <code class="code">set follow fork</code> and
+<code class="code">set charset</code>.  Setting these parameters influences certain
+behavior in ROCgdb.  Similarly, you can define parameters that
+can be used to influence behavior in custom Python scripts and commands.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Parameter_002e_005f_005finit_005f_005f"><span class="category-def">Function: </span><span><strong class="def-name">Parameter.__init__</strong> <var class="def-var-arguments">(name, command_class, parameter_class <span class="r">[</span>, enum_sequence<span class="r">]</span>)</var><a class="copiable-link" href="#index-Parameter_002e_005f_005finit_005f_005f"> &para;</a></span></dt>
+<dd><p>The object initializer for <code class="code">Parameter</code> registers the new
+parameter with ROCgdb.  This initializer is normally invoked
+from the subclass&rsquo; own <code class="code">__init__</code> method.
+</p>
+<p><var class="var">name</var> is the name of the new parameter.  If <var class="var">name</var> consists
+of multiple words, then the initial words are looked for as prefix
+parameters.  An example of this can be illustrated with the
+<code class="code">set print</code> set of parameters.  If <var class="var">name</var> is
+<code class="code">print foo</code>, then <code class="code">print</code> will be searched as the prefix
+parameter.  In this case the parameter can subsequently be accessed in
+ROCgdb as <code class="code">set print foo</code>.
+</p>
+<p>If <var class="var">name</var> consists of multiple words, and no prefix parameter group
+can be found, an exception is raised.
+</p>
+<p><var class="var">command_class</var> should be one of the &lsquo;<samp class="samp">COMMAND_</samp>&rsquo; constants
+(see <a class="pxref" href="CLI-Commands-In-Python.html">CLI Commands In Python</a>).  This argument tells ROCgdb how to
+categorize the new parameter in the help system.
+</p>
+<p><var class="var">parameter_class</var> should be one of the &lsquo;<samp class="samp">PARAM_</samp>&rsquo; constants
+defined below.  This argument tells ROCgdb the type of the new
+parameter; this information is used for input validation and
+completion.
+</p>
+<p>If <var class="var">parameter_class</var> is <code class="code">PARAM_ENUM</code>, then
+<var class="var">enum_sequence</var> must be a sequence of strings.  These strings
+represent the possible values for the parameter.
+</p>
+<p>If <var class="var">parameter_class</var> is not <code class="code">PARAM_ENUM</code>, then the presence
+of a fourth argument will cause an exception to be thrown.
+</p>
+<p>The help text for the new parameter includes the Python documentation
+string from the parameter&rsquo;s class, if there is one.  If there is no
+documentation string, a default value is used.  The documentation
+string is included in the output of the parameters <code class="code">help set</code> and
+<code class="code">help show</code> commands, and should be written taking this into
+account.  If the documentation string for the parameter&rsquo;s class is the
+empty string then ROCgdb will only use <code class="code">Parameter.set_doc</code>
+or <code class="code">Parameter.show_doc</code> (see below) in the <kbd class="kbd">help</kbd> output.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Parameter_002eset_005fdoc"><span class="category-def">Variable: </span><span><strong class="def-name">Parameter.set_doc</strong><a class="copiable-link" href="#index-Parameter_002eset_005fdoc"> &para;</a></span></dt>
+<dd><p>If this attribute exists, and is a string, then its value is used as
+the first part of the help text for this parameter&rsquo;s <code class="code">set</code>
+command.  The second part of the help text is taken from the
+documentation string for the parameter&rsquo;s class, if there is one.
+</p>
+<p>The value of <code class="code">set_doc</code> should give a brief summary specific to
+the set action, this text is only displayed when the user runs the
+<code class="code">help set</code> command for this parameter.  The class documentation
+should be used to give a fuller description of what the parameter
+does, this text is displayed for both the <code class="code">help set</code> and
+<code class="code">help show</code> commands.
+</p>
+<p>The <code class="code">set_doc</code> value is examined when <code class="code">Parameter.__init__</code> is
+invoked; subsequent changes have no effect.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Parameter_002eshow_005fdoc"><span class="category-def">Variable: </span><span><strong class="def-name">Parameter.show_doc</strong><a class="copiable-link" href="#index-Parameter_002eshow_005fdoc"> &para;</a></span></dt>
+<dd><p>If this attribute exists, and is a string, then its value is used as
+the first part of the help text for this parameter&rsquo;s <code class="code">show</code>
+command.  The second part of the help text is taken from the
+documentation string for the parameter&rsquo;s class, if there is one.
+</p>
+<p>The value of <code class="code">show_doc</code> should give a brief summary specific to
+the show action, this text is only displayed when the user runs the
+<code class="code">help show</code> command for this parameter.  The class documentation
+should be used to give a fuller description of what the parameter
+does, this text is displayed for both the <code class="code">help set</code> and
+<code class="code">help show</code> commands.
+</p>
+<p>The <code class="code">show_doc</code> value is examined when <code class="code">Parameter.__init__</code>
+is invoked; subsequent changes have no effect.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-Parameter_002evalue"><span class="category-def">Variable: </span><span><strong class="def-name">Parameter.value</strong><a class="copiable-link" href="#index-Parameter_002evalue"> &para;</a></span></dt>
+<dd><p>The <code class="code">value</code> attribute holds the underlying value of the
+parameter.  It can be read and assigned to just as any other
+attribute.  ROCgdb does validation when assignments are made.
+</p></dd></dl>
+
+<p>There are two methods that may be implemented in any <code class="code">Parameter</code>
+class.  These are:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Parameter_002eget_005fset_005fstring"><span class="category-def">Function: </span><span><strong class="def-name">Parameter.get_set_string</strong> <var class="def-var-arguments">(self)</var><a class="copiable-link" href="#index-Parameter_002eget_005fset_005fstring"> &para;</a></span></dt>
+<dd><p>If this method exists, ROCgdb will call it when a
+<var class="var">parameter</var>&rsquo;s value has been changed via the <code class="code">set</code> API (for
+example, <kbd class="kbd">set foo off</kbd>).  The <code class="code">value</code> attribute has already
+been populated with the new value and may be used in output.  This
+method must return a string.  If the returned string is not empty,
+ROCgdb will present it to the user.
+</p>
+<p>If this method raises the <code class="code">gdb.GdbError</code> exception
+(see <a class="pxref" href="Exception-Handling.html">Exception Handling</a>), then ROCgdb will print the
+exception&rsquo;s string and the <code class="code">set</code> command will fail.  Note,
+however, that the <code class="code">value</code> attribute will not be reset in this
+case.  So, if your parameter must validate values, it should store the
+old value internally and reset the exposed value, like so:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class ExampleParam (gdb.Parameter):
+   def __init__ (self, name):
+      super (ExampleParam, self).__init__ (name,
+                   gdb.COMMAND_DATA,
+                   gdb.PARAM_BOOLEAN)
+      self.value = True
+      self.saved_value = True
+   def validate(self):
+      return False
+   def get_set_string (self):
+      if not self.validate():
+        self.value = self.saved_value
+        raise gdb.GdbError('Failed to validate')
+      self.saved_value = self.value
+      return &quot;&quot;
+</pre></div>
+</dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-Parameter_002eget_005fshow_005fstring"><span class="category-def">Function: </span><span><strong class="def-name">Parameter.get_show_string</strong> <var class="def-var-arguments">(self, svalue)</var><a class="copiable-link" href="#index-Parameter_002eget_005fshow_005fstring"> &para;</a></span></dt>
+<dd><p>ROCgdb will call this method when a <var class="var">parameter</var>&rsquo;s
+<code class="code">show</code> API has been invoked (for example, <kbd class="kbd">show foo</kbd>).  The
+argument <code class="code">svalue</code> receives the string representation of the
+current value.  This method must return a string.
+</p></dd></dl>
+
+<p>When a new parameter is defined, its type must be specified.  The
+available types are represented by constants defined in the <code class="code">gdb</code>
+module:
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fBOOLEAN"></a>
+<a id="index-PARAM_005fBOOLEAN"></a><span><code class="code">gdb.PARAM_BOOLEAN</code><a class="copiable-link" href="#index-PARAM_005fBOOLEAN"> &para;</a></span></dt>
+<dd><p>The value is a plain boolean.  The Python boolean values, <code class="code">True</code>
+and <code class="code">False</code> are the only valid values.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fAUTO_005fBOOLEAN"></a>
+<a id="index-PARAM_005fAUTO_005fBOOLEAN"></a><span><code class="code">gdb.PARAM_AUTO_BOOLEAN</code><a class="copiable-link" href="#index-PARAM_005fAUTO_005fBOOLEAN"> &para;</a></span></dt>
+<dd><p>The value has three possible states: true, false, and &lsquo;<samp class="samp">auto</samp>&rsquo;.  In
+Python, true and false are represented using boolean constants, and
+&lsquo;<samp class="samp">auto</samp>&rsquo; is represented using <code class="code">None</code>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fUINTEGER"></a>
+<a id="index-PARAM_005fUINTEGER"></a><span><code class="code">gdb.PARAM_UINTEGER</code><a class="copiable-link" href="#index-PARAM_005fUINTEGER"> &para;</a></span></dt>
+<dd><p>The value is an unsigned integer.  The value of <code class="code">None</code> should be
+interpreted to mean &ldquo;unlimited&rdquo; (literal <code class="code">'unlimited'</code> can also
+be used to set that value), and the value of 0 is reserved and should
+not be used.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fINTEGER"></a>
+<a id="index-PARAM_005fINTEGER"></a><span><code class="code">gdb.PARAM_INTEGER</code><a class="copiable-link" href="#index-PARAM_005fINTEGER"> &para;</a></span></dt>
+<dd><p>The value is a signed integer.  The value of <code class="code">None</code> should be
+interpreted to mean &ldquo;unlimited&rdquo; (literal <code class="code">'unlimited'</code> can also
+be used to set that value), and the value of 0 is reserved and should
+not be used.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fSTRING"></a>
+<a id="index-PARAM_005fSTRING"></a><span><code class="code">gdb.PARAM_STRING</code><a class="copiable-link" href="#index-PARAM_005fSTRING"> &para;</a></span></dt>
+<dd><p>The value is a string.  When the user modifies the string, any escape
+sequences, such as &lsquo;<samp class="samp">\t</samp>&rsquo;, &lsquo;<samp class="samp">\f</samp>&rsquo;, and octal escapes, are
+translated into corresponding characters and encoded into the current
+host charset.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fSTRING_005fNOESCAPE"></a>
+<a id="index-PARAM_005fSTRING_005fNOESCAPE"></a><span><code class="code">gdb.PARAM_STRING_NOESCAPE</code><a class="copiable-link" href="#index-PARAM_005fSTRING_005fNOESCAPE"> &para;</a></span></dt>
+<dd><p>The value is a string.  When the user modifies the string, escapes are
+passed through untranslated.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fOPTIONAL_005fFILENAME"></a>
+<a id="index-PARAM_005fOPTIONAL_005fFILENAME"></a><span><code class="code">gdb.PARAM_OPTIONAL_FILENAME</code><a class="copiable-link" href="#index-PARAM_005fOPTIONAL_005fFILENAME"> &para;</a></span></dt>
+<dd><p>The value is a either a filename (a string), or <code class="code">None</code>.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fFILENAME"></a>
+<a id="index-PARAM_005fFILENAME"></a><span><code class="code">gdb.PARAM_FILENAME</code><a class="copiable-link" href="#index-PARAM_005fFILENAME"> &para;</a></span></dt>
+<dd><p>The value is a filename.  This is just like
+<code class="code">PARAM_STRING_NOESCAPE</code>, but uses file names for completion.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fZINTEGER"></a>
+<a id="index-PARAM_005fZINTEGER"></a><span><code class="code">gdb.PARAM_ZINTEGER</code><a class="copiable-link" href="#index-PARAM_005fZINTEGER"> &para;</a></span></dt>
+<dd><p>The value is a signed integer.  This is like <code class="code">PARAM_INTEGER</code>,
+except that 0 is allowed and the value of <code class="code">None</code> is not supported.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fZUINTEGER"></a>
+<a id="index-PARAM_005fZUINTEGER"></a><span><code class="code">gdb.PARAM_ZUINTEGER</code><a class="copiable-link" href="#index-PARAM_005fZUINTEGER"> &para;</a></span></dt>
+<dd><p>The value is an unsigned integer.  This is like <code class="code">PARAM_UINTEGER</code>,
+except that 0 is allowed and the value of <code class="code">None</code> is not supported.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fZUINTEGER_005fUNLIMITED"></a>
+<a id="index-PARAM_005fZUINTEGER_005fUNLIMITED"></a><span><code class="code">gdb.PARAM_ZUINTEGER_UNLIMITED</code><a class="copiable-link" href="#index-PARAM_005fZUINTEGER_005fUNLIMITED"> &para;</a></span></dt>
+<dd><p>The value is a signed integer.  This is like <code class="code">PARAM_INTEGER</code>
+including that the value of <code class="code">None</code> should be interpreted to mean
+&ldquo;unlimited&rdquo; (literal <code class="code">'unlimited'</code> can also be used to set that
+value), except that 0 is allowed, and the value cannot be negative,
+except the special value -1 is returned for the setting of &ldquo;unlimited&rdquo;.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fENUM"></a>
+<a id="index-PARAM_005fENUM"></a><span><code class="code">gdb.PARAM_ENUM</code><a class="copiable-link" href="#index-PARAM_005fENUM"> &para;</a></span></dt>
+<dd><p>The value is a string, which must be one of a collection string
+constants provided when the parameter is created.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-gdb_002ePARAM_005fCOLOR"></a>
+<a id="index-PARAM_005fCOLOR"></a><span><code class="code">gdb.PARAM_COLOR</code><a class="copiable-link" href="#index-PARAM_005fCOLOR"> &para;</a></span></dt>
+<dd><p>The value is <code class="code">gdb.Color</code> instance.
+</p></dd>
+</dl>
+
+<p>When creating multiple new parameters using <code class="code">gdb.Parameter</code>, it
+is often desirable to create a prefix command that can be used to
+group related parameters together, for example, if you wished to add
+the parameters <kbd class="kbd">plugin-name feature-1</kbd> and <kbd class="kbd">plugin-name
+feature-2</kbd>, then the <kbd class="kbd">plugin-name</kbd> would need to be a prefix
+command (see <a class="pxref" href="CLI-Commands-In-Python.html">CLI Commands In Python</a>).
+</p>
+<a class="anchor" id="gdb_002eParameterPrefix"></a><p>However, when creating parameters, you will almost always need to
+create two prefix commands, one as a <kbd class="kbd">set</kbd> sub-command, and one as
+a <kbd class="kbd">show</kbd> sub-command.  ROCgdb provides the
+<code class="code">gdb.ParameterPrefix</code> helper class to make creation of these two
+prefixes easier.
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ParameterPrefix_002e_005f_005finit_005f_005f"><span class="category-def">Function: </span><span><strong class="def-name">ParameterPrefix.__init__</strong> <var class="def-var-arguments">(name, command_class, doc = <code class="code">None</code>)</var><a class="copiable-link" href="#index-ParameterPrefix_002e_005f_005finit_005f_005f"> &para;</a></span></dt>
+<dd><p>The object initializer for <code class="code">ParameterPrefix</code> registers two new
+<code class="code">gdb.Command</code> prefixes, one as a <kbd class="kbd">set</kbd> sub-command, and the
+other as a <kbd class="kbd">show</kbd> sub-command.
+</p>
+<p><var class="var">name</var>, a string, is the name of the new prefix, without either
+<kbd class="kbd">set</kbd> or <kbd class="kbd">show</kbd>, similar to the <var class="var">name</var> passed to
+<code class="code">gdb.Parameter</code> (see <a class="pxref" href="#Parameters-In-Python">Parameters In Python</a>).  For example, to
+create the prefixes <kbd class="kbd">set plugin-name</kbd> and <kbd class="kbd">show plugin-name</kbd>,
+you would pass the string <kbd class="kbd">plugin-name</kbd>.
+</p>
+<p><var class="var">command_class</var> should be one of the &lsquo;<samp class="samp">COMMAND_</samp>&rsquo; constants
+(see <a class="pxref" href="CLI-Commands-In-Python.html">CLI Commands In Python</a>).  This argument tells ROCgdb how to
+categorize the new parameter prefixes in the help system.
+</p>
+<p>There are a number of ways in which the help text for the two new
+prefix commands can be provided.  If the <var class="var">doc</var> parameter is not
+<code class="code">None</code>, then this will be used as the documentation string for
+both prefix commands.
+</p>
+<p>If <var class="var">doc</var> is <code class="code">None</code>, but <code class="code">gdb.ParameterPrefix</code> has been
+sub-classed, then the prefix command documentation will be taken from
+sub-classes documentation string (i.e., the <code class="code">__doc__</code> attribute).
+</p>
+<p>If <var class="var">doc</var> is <code class="code">None</code>, and there is no <code class="code">__doc__</code> string,
+then the default value &lsquo;<samp class="samp">This command is not documented.</samp>&rsquo; is used.
+</p>
+<p>When writing the help text, keep in mind that the same text is used
+for both the <kbd class="kbd">set</kbd> and <kbd class="kbd">show</kbd> prefix commands.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ParameterPrefix_002einvoke_005fset"><span class="category-def">Function: </span><span><strong class="def-name">ParameterPrefix.invoke_set</strong> <var class="def-var-arguments">(argument, from_tty)</var><a class="copiable-link" href="#index-ParameterPrefix_002einvoke_005fset"> &para;</a></span></dt>
+<dd><p>If a sub-class defines this method, then ROCgdb will call this
+when the prefix command is used with an unknown sub-command.  The
+<var class="var">argument</var> and <var class="var">from_tty</var> parameters are the same as for
+<code class="code">gdb.Command.invoke</code> (see <a class="pxref" href="CLI-Commands-In-Python.html#Command_002einvoke">Command.invoke</a>).
+</p>
+<p>If this method throws an exception, it is turned into a ROCgdb
+<code class="code">error</code> call.  Otherwise, the return value is ignored.
+</p>
+<p>It is not required that a <code class="code">ParameterPrefix</code> sub-class override
+this method.  Usually, a parameter prefix only exists as a means to
+group related parameters together.  ROCgdb handles this use case
+automatically with no need to implement <code class="code">invoke_set</code>.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ParameterPrefix_002einvoke_005fshow"><span class="category-def">Function: </span><span><strong class="def-name">ParameterPrefix.invoke_show</strong> <var class="def-var-arguments">(argument, from_tty)</var><a class="copiable-link" href="#index-ParameterPrefix_002einvoke_005fshow"> &para;</a></span></dt>
+<dd><p>This is like the <code class="code">invoke_set</code> method, but for the <kbd class="kbd">show</kbd>
+prefix command.  As with <code class="code">invoke_set</code>, implementation of this
+method is optional, and usually not required.
+</p></dd></dl>
+
+<a class="index-entry-id" id="index-don_0027t-repeat-Python-command-1"></a>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-ParameterPrefix_002edont_005frepeat"><span class="category-def">Function: </span><span><strong class="def-name">ParameterPrefix.dont_repeat</strong> <var class="def-var-arguments">()</var><a class="copiable-link" href="#index-ParameterPrefix_002edont_005frepeat"> &para;</a></span></dt>
+<dd><p>Like <code class="code">Command.dont_repeat</code> (see <a class="pxref" href="CLI-Commands-In-Python.html#Command_002edont_005frepeat">Command.dont_repeat</a>), this
+can be called from <code class="code">ParameterPrefix.invoke_set</code> or
+<code class="code">ParameterPrefix.invoke_show</code> to prevent the prefix commands from
+being repeated.
+</p></dd></dl>
+
+<p>Here is a small example that uses <code class="code">gdb.ParameterPrefix</code> along
+with <code class="code">gdb.Parameter</code> to create two new parameters
+<kbd class="kbd">plugin-name feature-1</kbd> and <kbd class="kbd">plugin-name feature-2</kbd>.  As
+neither <code class="code">invoke_set</code> or <code class="code">invoke_show</code> is needed, this
+example does not sub-class <code class="code">gdb.ParameterPrefix</code>:
+</p>
+<div class="example smallexample">
+<pre class="example-preformatted">class ExampleParam(gdb.Parameter):
+   def __init__ (self, name):
+      super ().__init__ (name, gdb.COMMAND_DATA, gdb.PARAM_BOOLEAN)
+      self.value = True
+
+gdb.ParameterPrefix(&quot;plugin-name&quot;, gdb.COMMAND_NONE,
+                    &quot;&quot;&quot;An example parameter prefix.
+
+                    This groups together some parameters.&quot;&quot;&quot;)
+ExampleParam(&quot;plugin-name feature-1&quot;)
+ExampleParam(&quot;plugin-name feature-2&quot;)
+</pre></div>
+
+<a class="anchor" id="Creating-Style-Parameters"></a><p>The helper class <code class="code">gdb.StyleParameterSet</code> exists to make it easier
+to create new styles.  ROCgdb places style settings under
+&lsquo;<samp class="samp">show style &hellip;</samp>&rsquo; and &lsquo;<samp class="samp">set style &hellip;</samp>&rsquo;, an example of a style
+is &lsquo;<samp class="samp">filename</samp>&rsquo;.  Each style is really a prefix command (see <a class="pxref" href="CLI-Commands-In-Python.html">CLI Commands In Python</a>), with sub-commands &lsquo;<samp class="samp">foreground</samp>&rsquo;,
+&lsquo;<samp class="samp">background</samp>&rsquo;, and optionally, &lsquo;<samp class="samp">intensity</samp>&rsquo;.
+</p>
+<p>It is simple enough to create a new style using two <code class="code">gdb.Command</code>
+objects for the prefix commands (one for &lsquo;<samp class="samp">set</samp>&rsquo;, and one for
+&lsquo;<samp class="samp">show</samp>&rsquo;), and three <code class="code">gdb.Parameter</code> objects, one each for the
+&lsquo;<samp class="samp">foreground</samp>&rsquo;, &lsquo;<samp class="samp">background</samp>&rsquo;, and &lsquo;<samp class="samp">intensity</samp>&rsquo;.  You would
+also want to take care to craft the help text so that the new style
+behaves the same as the existing styles.
+</p>
+<p>Or, you can use the <code class="code">gdb.StyleParameterSet</code> class, which takes
+care of all this, as the following example shows:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) python s = gdb.StyleParameterSet(&quot;my-style&quot;)
+(gdb) show style my-style
+style my-style background:  The &quot;my-style&quot; style background color is: none
+style my-style foreground:  The &quot;my-style&quot; style foreground color is: none
+style my-style intensity:  The &quot;my-style&quot; style display intensity is: normal
+(gdb)
+</pre></div></div>
+
+<p>You might also want to group a number of styles within a new prefix,
+similar to how ROCgdb groups disassembler related styles within
+the &lsquo;<samp class="samp">style disassembler</samp>&rsquo; prefix.  This can be done using
+<code class="code">gdb.ParameterPrefix</code> (see <a class="pxref" href="#gdb_002eParameterPrefix">gdb.ParameterPrefix</a>), as in this
+example:
+</p>
+<div class="example smallexample">
+<div class="group"><pre class="example-preformatted">(gdb) python gdb.ParameterPrefix(&quot;style group&quot;, gdb.COMMAND_NONE)
+(gdb) python s_a = gdb.StyleParameterSet(&quot;group aa&quot;)
+(gdb) python s_b = gdb.StyleParameterSet(&quot;group bb&quot;)
+(gdb) show style group
+style group aa background:  The &quot;group aa&quot; style background color is: none
+style group aa foreground:  The &quot;group aa&quot; style foreground color is: none
+style group aa intensity:  The &quot;group aa&quot; style display intensity is: normal
+style group bb background:  The &quot;group bb&quot; style background color is: none
+style group bb foreground:  The &quot;group bb&quot; style foreground color is: none
+style group bb intensity:  The &quot;group bb&quot; style display intensity is: normal
+(gdb)
+</pre></div></div>
+
+<p>The <code class="code">gdb.StyleParameterSet</code> class has the following methods and
+attributes:
+</p>
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-StyleParameterSet_002e_005f_005finit_005f_005f_0028name_002c"><span class="category-def">Function: </span><span><strong class="def-name">StyleParameterSet.__init__(name,</strong> <var class="def-var-arguments">add_intensity=<code class="code">True</code><!-- /@w -->, doc=<code class="code">None</code><!-- /@w -->)</var><a class="copiable-link" href="#index-StyleParameterSet_002e_005f_005finit_005f_005f_0028name_002c"> &para;</a></span></dt>
+<dd><p>Create a new style group based on <var class="var">name</var>, which is a string.  For
+example if <var class="var">name</var> is &lsquo;<samp class="samp">my-style</samp>&rsquo;, then ROCgdb will
+create the prefix commands &lsquo;<samp class="samp">set style my-style</samp>&rsquo; and &lsquo;<samp class="samp">show
+style my-style</samp>&rsquo;.  Within these prefix commands will be
+&lsquo;<samp class="samp">foreground</samp>&rsquo;, &lsquo;<samp class="samp">background</samp>&rsquo;, and &lsquo;<samp class="samp">intensity</samp>&rsquo; parameters
+with the appropriate types.
+</p>
+<p>It is also possible for <var class="var">name</var> to consist of multiple words, so
+long as each prefix command (except the last one) already exists.  For
+example, it is valid to use a <var class="var">name</var> value of &lsquo;<samp class="samp">disassembler
+my-style</samp>&rsquo;, as the &lsquo;<samp class="samp">disassembler</samp>&rsquo; prefix command already exists.
+ROCgdb would then create &lsquo;<samp class="samp">set style disassembler my-style</samp>&rsquo;
+and &lsquo;<samp class="samp">show style disassembler my-style</samp>&rsquo;, and within the
+&lsquo;<samp class="samp">my-style</samp>&rsquo; prefixes will be the &lsquo;<samp class="samp">foreground</samp>&rsquo;,
+&lsquo;<samp class="samp">background</samp>&rsquo;, and &lsquo;<samp class="samp">intensity</samp>&rsquo; parameters with the
+appropriate types.
+</p>
+<p>Every style requires a &lsquo;<samp class="samp">foreground</samp>&rsquo; and &lsquo;<samp class="samp">background</samp>&rsquo;, but
+not every style needs an &lsquo;<samp class="samp">intensity</samp>&rsquo;.  If <var class="var">add_intensity</var> is
+<code class="code">True</code> (the default), then the &lsquo;<samp class="samp">intensity</samp>&rsquo; parameter will be
+created.  If <var class="var">add_intensity</var> is <code class="code">False</code>, then the
+&lsquo;<samp class="samp">intensity</samp>&rsquo; parameter will not be created.
+</p>
+<p>If the &lsquo;<samp class="samp">intensity</samp>&rsquo; parameter is not created, then the
+<code class="code">gdb.Style</code> (see <a class="pxref" href="Styles-In-Python.html">Python representation of styles</a>) created from this
+<code class="code">gdb.StyleParameterSet</code> will have <code class="code">gdb.INTENSITY_NORMAL</code>.
+</p>
+<p>The <var class="var">doc</var> should be a string which will be used as the help text
+for the <var class="var">name</var> prefix command.  This text is used as the
+<code class="code">Command.__doc__</code> value for the <code class="code">gdb.Command</code> object that is
+the prefix command object (see <a class="pxref" href="CLI-Commands-In-Python.html">CLI Commands In Python</a>).  If
+<var class="var">doc</var> is <code class="code">None</code> (the default) then a basic default help text
+is used.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn">
+<dt class="deffn defun-alias-deffn" id="index-StyleParameterSet_002eapply_0028string_0029"><span class="category-def">Function: </span><span><strong class="def-name">StyleParameterSet.apply(string)</strong><a class="copiable-link" href="#index-StyleParameterSet_002eapply_0028string_0029"> &para;</a></span></dt>
+<dd><p>Equivalent to <code class="code">StyleParameterSet.style.apply(string)</code>.  Returns a
+copy of <var class="var">string</var> with escape sequences added to the start and end.
+The escape sequence at the start applies this style, and the escape
+sequence at the end restores the terminal default.
+</p>
+<p>If styling is disabled (i.e. &lsquo;<samp class="samp">set style enabled off</samp>&rsquo;), then no
+escape sequences are added and this method returns a copy of
+<var class="var">string</var>.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-StyleParameterSet_002estyle"><span class="category-def">Variable: </span><span><strong class="def-name">StyleParameterSet.style</strong><a class="copiable-link" href="#index-StyleParameterSet_002estyle"> &para;</a></span></dt>
+<dd><p>This read/write attribute holds a <code class="code">gdb.Style</code> object
+(see <a class="pxref" href="Styles-In-Python.html">Python representation of styles</a>), that is a named style associated with this
+style parameter group.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr">
+<dt class="defvr defvar-alias-defvr" id="index-StyleParameterSet_002evalue"><span class="category-def">Variable: </span><span><strong class="def-name">StyleParameterSet.value</strong><a class="copiable-link" href="#index-StyleParameterSet_002evalue"> &para;</a></span></dt>
+<dd><p>This is an alias for <code class="code">StyleParameterSet.style</code>, see above.
+</p></dd></dl>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Functions-In-Python.html">Writing new convenience functions</a>, Previous: <a href="GDB_002fMI-Notifications-In-Python.html"><small class="sc">GDB/MI</small> Notifications In Python</a>, Up: <a href="Python-API.html">Python API</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+</div><!-- toc-sidebar-main -->
+
+</body>
+</html>
